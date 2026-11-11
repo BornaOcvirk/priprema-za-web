@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <title>Objašnjenje rješenja - Probni kolokvij Web programiranje</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 15mm 12mm 15mm 12mm;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            color: #24292f;
+            line-height: 1.4;
+            font-size: 12px;
+            background: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            border-bottom: 2.5px solid #3cb47c;
+            padding-bottom: 10px;
+            margin-bottom: 16px;
+        }
+        .header h1 {
+            color: #1a7f37;
+            margin: 0 0 4px 0;
+            font-size: 21px;
+        }
+        .header .subtitle {
+            color: #57606a;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .badge {
+            display: inline-block;
+            padding: 2px 7px;
+            font-size: 10.5px;
+            font-weight: 600;
+            border-radius: 10px;
+            background: #dafbe1;
+            color: #1a7f37;
+            margin-right: 4px;
+        }
+        h2 {
+            color: #0969da;
+            font-size: 15px;
+            margin-top: 18px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #d0d7de;
+            padding-bottom: 4px;
+            page-break-after: avoid;
+        }
+        h3 {
+            color: #24292f;
+            font-size: 13px;
+            margin-top: 12px;
+            margin-bottom: 6px;
+            page-break-after: avoid;
+        }
+        p, li {
+            font-size: 11.5px;
+            color: #333;
+            margin-top: 3px;
+            margin-bottom: 5px;
+        }
+        ul {
+            margin-top: 3px;
+            margin-bottom: 6px;
+            padding-left: 18px;
+        }
+        li {
+            margin-bottom: 3px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 11px;
+            page-break-inside: avoid;
+        }
+        th, td {
+            border: 1px solid #d0d7de;
+            padding: 6px 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background-color: #f6f8fa;
+            font-weight: 600;
+            color: #24292f;
+        }
+        tr:nth-child(even) {
+            background-color: #fbfcfd;
+        }
+        pre {
+            background-color: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 5px;
+            padding: 8px 10px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 10.5px;
+            line-height: 1.35;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow: visible;
+            margin: 6px 0 10px 0;
+            page-break-inside: avoid;
+        }
+        code {
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 10.5px;
+            background-color: #afb8c133;
+            padding: 1.5px 3.5px;
+            border-radius: 3px;
+        }
+        .file-card {
+            background: #ffffff;
+            border: 1px solid #e1e4e8;
+            border-left: 4px solid #0969da;
+            border-radius: 4px;
+            padding: 10px 12px;
+            margin-bottom: 14px;
+            page-break-inside: avoid;
+        }
+        .file-card.server {
+            border-left-color: #8250df;
+        }
+        .file-card.style {
+            border-left-color: #cf222e;
+        }
+        .file-card.html {
+            border-left-color: #bf8700;
+        }
+        .file-card.js {
+            border-left-color: #1a7f37;
+        }
+        .file-title {
+            font-weight: 700;
+            font-size: 12.5px;
+            color: #24292f;
+            margin-bottom: 5px;
+        }
+        .note-box {
+            background: #ddf4ff;
+            border: 1px solid #54aeff66;
+            border-radius: 5px;
+            padding: 8px 12px;
+            margin: 10px 0;
+            font-size: 11.5px;
+            page-break-inside: avoid;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Dokumentacija i objašnjenje rješenja</h1>
+        <div class="subtitle">Kolegij: Web programiranje &bull; Zadatak: Probni kolokvij 1</div>
+        <div style="margin-top: 6px;">
+            <span class="badge">Bootstrap 5.3</span>
+            <span class="badge">Sass</span>
+            <span class="badge">jQuery</span>
+            <span class="badge">Node.js Express</span>
+            <span class="badge">Vite Dev Server</span>
+        </div>
+    </div>
+
+    <h2>1. Pregled zadataka i bodovnog praga</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 18%;">Zadatak</th>
+                <th style="width: 14%;">Bodovi</th>
+                <th>Opis i zahtjevi</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Zadatak 1</strong></td>
+                <td>21 bod</td>
+                <td>
+                    Prilagodba Bootstrap boja (success, warning, danger) i fonta (Fraunces).<br>
+                    Izrada navigacijske trake sa sjenom i ikonom <code>stack</code>.<br>
+                    Dodavanje UUID-a u <code>todos.js</code>, izvoz modula.<br>
+                    Učitavanje u <code>index.js</code> poslužitelja, Express rute (GET, PUT, DELETE).<br>
+                    Definiranje funkcije <code>get_todos</code> na klijentu.
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Zadatak 2</strong></td>
+                <td>16 bodova</td>
+                <td>
+                    Izrada prototipa kartice u <code>index.html</code> (naslov, datum, status, gumbi).<br>
+                    Oblikovanje kartice (zaobljenost <code>rounded-4</code>, gumbi pilule).<br>
+                    Responzivni raspored (3 stupca na velikom, 2 na srednjem, 1 na malom ekranu).<br>
+                    Komentiranje prototipa radi prelaska na dinamičko renderiranje.
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Zadatak 3</strong></td>
+                <td>22 boda</td>
+                <td>
+                    Funkcija <code>render_todos</code> za dinamičko iscrtavanje kartica.<br>
+                    Funkcija <code>toggle</code> za promjenu statusa (server + klijent, zamjena ikone).<br>
+                    Funkcija <code>remove</code> za brisanje (server + klijent, uklanjanje kartice).<br>
+                    Formatiranje datuma iz Unix milisekundi u <code>M/D/YYYY</code>.<br>
+                    Implementacija fade-in efekta pri inicijalnom učitavanju.
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Urednost koda</strong></td>
+                <td>1 bod</td>
+                <td>Uklanjanje svih <code>node_modules</code> mapa prije komprimiranja u zip.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. Detaljan pregled svih izmjena po datotekama</h2>
+
+    <div class="file-card server">
+        <div class="file-title">📁 template/server/todos.js (Poslužiteljska baza podataka)</div>
+        <p><strong>Što je promijenjeno:</strong></p>
+        <ul>
+            <li>Uvezen je <code>randomUUID</code> iz ugrađenog Node.js modula <code>crypto</code>.</li>
+            <li>Svakom zapisu u nizu <code>todos</code> generiran je jedinstveni UUID atribut: <code>id: randomUUID()</code>.</li>
+            <li>Niz je eksportiran: <code>export { todos }; export default todos;</code>.</li>
+        </ul>
+        <p><strong>Zašto:</strong></p>
+        <p>U originalnom predlošku zapisi nisu imali identifikatore niti je modul bio eksportiran. Za ažuriranje i brisanje točno određenog zapisa, poslužitelj i klijent moraju komunicirati putem jedinstvenog ključa (UUID). Ovo donosi <strong>2 boda</strong> za UUID i omogućuje uvoz u poslužiteljski modul.</p>
+        <pre><code>import { randomUUID } from "crypto";
+
+const todos = [
+  { id: randomUUID(), title: "Buy groceries", timestamp: 1764845228329, done: true },
+  { id: randomUUID(), title: "Email client",  timestamp: 1764845228329, done: true },
+  ...
+];
+
+export { todos };
+export default todos;</code></pre>
+    </div>
+
+    <div class="file-card server">
+        <div class="file-title">📁 template/server/index.js (Glavni modul poslužitelja)</div>
+        <p><strong>Što je promijenjeno:</strong></p>
+        <ul>
+            <li>Uvezen niz <code>todos</code> iz <code>./todos.js</code>.</li>
+            <li>Dodan middleware <code>app.use(express.json());</code> za prihvaćanje JSON tijela zahtjeva.</li>
+            <li>Definirana ruta za dohvaćanje: <code>GET /api/todos</code>.</li>
+            <li>Definirana ruta za uređivanje: <code>PUT /api/todos/:id</code> (traži element po UUID-u i ažurira <code>done</code>).</li>
+            <li>Definirana ruta za brisanje: <code>DELETE /api/todos/:id</code> (uklanja zapis pomoću <code>splice</code>).</li>
+        </ul>
+        <p><strong>Zašto:</strong></p>
+        <p>Zadatak 1 zahtijeva REST API rute za dohvat, uređivanje i brisanje. <code>express.json()</code> je ključan jer klijentska <code>toggle</code> funkcija šalje JSON tijelo (<code>{ done: true/false }</code>) koje Express bez ovog parsera ne može pročitati.</p>
+        <pre><code>import express from 'express';
+import todos from './todos.js';
+
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+// Dohvaćanje zapisa
+app.get("/api/todos", (req, res) => res.json(todos));
+
+// Uređivanje postojećeg zapisa (toggle statusa)
+app.put("/api/todos/:id", (req, res) => {
+    const todo = todos.find(t => t.id === req.params.id);
+    if (!todo) return res.status(404).json({ error: "Not found" });
+    if (req.body.done !== undefined) todo.done = req.body.done;
+    res.json(todo);
+});
+
+// Brisanje postojećeg zapisa
+app.delete("/api/todos/:id", (req, res) => {
+    const index = todos.findIndex(t => t.id === req.params.id);
+    if (index === -1) return res.status(404).json({ error: "Not found" });
+    const [removed] = todos.splice(index, 1);
+    res.json(removed);
+});</code></pre>
+    </div>
+
+    <div class="page-break"></div>
+
+    <div class="file-card style">
+        <div class="file-title">📁 template/src/scss/style.scss (Stilovi, Bootstrap varijable i tipografija)</div>
+        <p><strong>Što je promijenjeno:</strong></p>
+        <ul>
+            <li>Prilagođene Bootstrap Sass varijable: <code>$success: #3cb47c;</code>, <code>$warning: #ffea63;</code>, <code>$danger: #fe604e;</code>.</li>
+            <li>Varijable su deklarirane <strong>prije</strong> uvoza <code>@import "bootstrap/scss/bootstrap";</code>.</li>
+            <li>Uvezen Google font <strong>Fraunces</strong> i postavljen na <code>body { font-family: "Fraunces", serif; }</code>.</li>
+        </ul>
+        <p><strong>Zašto:</strong></p>
+        <p>U Sass sustavu varijable sa zastavicom <code>!default</code> moraju se definirati prije uvoza Bootstrapa kako bi prebrisale zadane vrijednosti. Time gumbi i ikone uspjeha/upozorenja/greške poprimaju točne tražene hex boje, a font Fraunces daje izgled iz video prikaza.</p>
+        <pre><code>$primary: #26a69a;
+$light: #f8f9fa;
+$dark: #212529;
+$success: #3cb47c;
+$warning: #ffea63;
+$danger: #fe604e;
+
+@import "bootstrap/scss/bootstrap";
+
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap');
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css");
+
+body {
+  font-family: "Fraunces", serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}</code></pre>
+    </div>
+
+    <div class="file-card html">
+        <div class="file-title">📁 template/src/index.html (HTML struktura i prototip kartice)</div>
+        <p><strong>Što je promijenjeno:</strong></p>
+        <ul>
+            <li>Navigacija: zelena pozadina (<code>bg-success</code>), sjena (<code>shadow</code>), ikona <code>bi-stack text-warning</code> i naslov <code>TaskProgress</code>.</li>
+            <li>Prototip kartice: definiran u HTML-u sa zaobljenošću <code>rounded-4</code>, sjenom <code>shadow-sm</code>, obrubom <code>border</code> i gumbima u obliku pilula (<code>rounded-pill flex-fill</code>), a zatim <strong>zakomentiran</strong>.</li>
+            <li>Kontejner: <code>&lt;div id="todos-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 w-100"&gt;&lt;/div&gt;</code>.</li>
+        </ul>
+        <p><strong>Zašto:</strong></p>
+        <p>Zadatak 2 traži izradu i stiliziranje HTML prototipa, a zatim njegovo komentiranje prije dinamičkog renderiranja. Klase <code>row-cols-1 row-cols-md-2 row-cols-lg-3</code> pružaju responzivni prikaz: 3 kartice na desktopu, 2 na tabletu, 1 na mobitelu uz razmak <code>g-4</code>.</p>
+        <pre><code>&lt;nav class="navbar bg-success shadow mb-4"&gt;
+    &lt;div class="container"&gt;
+        &lt;a class="navbar-brand text-white d-flex align-items-center" href="#"&gt;
+            &lt;i class="bi bi-stack text-warning me-2 fs-5"&gt;&lt;/i&gt;
+            &lt;span&gt;TaskProgress&lt;/span&gt;
+        &lt;/a&gt;
+    &lt;/div&gt;
+&lt;/nav&gt;
+
+&lt;main class="container mb-5"&gt;
+    &lt;!-- Prototip kartice (Zadatak 2):
+    &lt;div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4"&gt;
+        &lt;div class="col"&gt;
+            &lt;div class="card rounded-4 border shadow-sm p-3 h-100"&gt;
+                &lt;div class="card-body d-flex flex-column justify-content-between p-0"&gt;
+                    &lt;div&gt;
+                        &lt;h5 class="card-title fw-bold mb-2"&gt;Buy groceries&lt;/h5&gt;
+                        &lt;p class="card-text mb-1"&gt;&lt;span class="fw-bold"&gt;When:&lt;/span&gt; 12/4/2025&lt;/p&gt;
+                        &lt;p class="card-text mb-3"&gt;&lt;span class="fw-bold"&gt;Status:&lt;/span&gt; &lt;i class="bi bi-check-circle-fill text-success"&gt;&lt;/i&gt;&lt;/p&gt;
+                    &lt;/div&gt;
+                    &lt;div class="d-flex gap-2 mt-auto"&gt;
+                        &lt;button class="btn btn-outline-secondary rounded-pill flex-fill"&gt;Toggle&lt;/button&gt;
+                        &lt;button class="btn btn-outline-secondary rounded-pill flex-fill"&gt;Remove&lt;/button&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    --&gt;
+
+    &lt;div id="todos-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 w-100"&gt;&lt;/div&gt;
+&lt;/main&gt;</code></pre>
+    </div>
+
+    <div class="page-break"></div>
+
+    <div class="file-card js">
+        <div class="file-title">📁 template/src/js/index.js (Klijentska logika, animacije i API pozivi)</div>
+        <p><strong>Što je implementirano:</strong></p>
+        <ul>
+            <li><strong><code>format_date(timestamp)</code>:</strong> pretvara Unix milisekunde u format <code>M/D/YYYY</code> (npr. <code>12/4/2025</code>).</li>
+            <li><strong><code>get_todos(callback)</code>:</strong> asinkroni dohvat podataka preko jQueryja (<code>$.get('/api/todos')</code>) koji vraća Promise.</li>
+            <li><strong><code>toggle(id)</code>:</strong> šalje <code>PUT /api/todos/${id}</code> sa suprotnim <code>done</code> statusom i mijenja ikonu (<code>check-circle-fill</code> &harr; <code>x-circle-fill</code>).</li>
+            <li><strong><code>remove(id)</code>:</strong> šalje <code>DELETE /api/todos/${id}</code> i uklanja karticu uz <code>.fadeOut(300)</code> animaciju.</li>
+            <li><strong><code>render_todos(todos)</code>:</strong> stvara DOM elemente kartica, povezuje event listenere i pokreće <code>.fadeIn(500)</code> pri učitavanju.</li>
+            <li><strong>Globalno izlaganje:</strong> funkcije su postavljene na <code>window</code> objekt radi automatskog testiranja.</li>
+        </ul>
+        <pre><code>import $ from "jquery";
+
+function format_date(timestamp) {
+    const d = new Date(timestamp);
+    return `${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`;
+}
+
+function get_todos(callback) {
+    const request = $.get("/api/todos");
+    if (typeof callback === "function") request.then(callback);
+    return request;
+}
+
+function toggle(id) {
+    const $col = $(`[data-id="${id}"]`);
+    const $statusIcon = $col.find(".status-icon");
+    const isDone = $statusIcon.hasClass("bi-check-circle-fill");
+    const newStatus = !isDone;
+
+    return $.ajax({
+        url: `/api/todos/${id}`,
+        method: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify({ done: newStatus }),
+        success: (updated) => {
+            if (updated.done) {
+                $statusIcon.removeClass("bi-x-circle-fill text-danger").addClass("bi-check-circle-fill text-success");
+            } else {
+                $statusIcon.removeClass("bi-check-circle-fill text-success").addClass("bi-x-circle-fill text-danger");
+            }
+        }
+    });
+}
+
+function remove(id) {
+    const $col = $(`[data-id="${id}"]`);
+    return $.ajax({
+        url: `/api/todos/${id}`,
+        method: "DELETE",
+        success: () => {
+            $col.fadeOut(300, function () { $(this).remove(); });
+        }
+    });
+}
+
+function render_todos(todos) {
+    const $container = $("#todos-container");
+    $container.empty();
+
+    todos.forEach((todo) => {
+        const formattedDate = format_date(todo.timestamp);
+        const iconClass = todo.done ? "bi-check-circle-fill text-success" : "bi-x-circle-fill text-danger";
+
+        const $col = $(`
+            &lt;div class="col" data-id="${todo.id}"&gt;
+                &lt;div class="card rounded-4 border shadow-sm p-3 h-100"&gt;
+                    &lt;div class="card-body d-flex flex-column justify-content-between p-0"&gt;
+                        &lt;div&gt;
+                            &lt;h5 class="card-title fw-bold mb-2"&gt;${todo.title}&lt;/h5&gt;
+                            &lt;p class="card-text mb-1"&gt;&lt;span class="fw-bold"&gt;When:&lt;/span&gt; ${formattedDate}&lt;/p&gt;
+                            &lt;p class="card-text mb-3"&gt;&lt;span class="fw-bold"&gt;Status:&lt;/span&gt; &lt;i class="bi ${iconClass} status-icon"&gt;&lt;/i&gt;&lt;/p&gt;
+                        &lt;/div&gt;
+                        &lt;div class="d-flex gap-2 mt-auto"&gt;
+                            &lt;button class="btn btn-outline-secondary rounded-pill flex-fill btn-toggle"&gt;Toggle&lt;/button&gt;
+                            &lt;button class="btn btn-outline-secondary rounded-pill flex-fill btn-remove"&gt;Remove&lt;/button&gt;
+                        &lt;/div&gt;
+                    &lt;/div&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        `);
+
+        $col.find(".btn-toggle").on("click", () => toggle(todo.id));
+        $col.find(".btn-remove").on("click", () => remove(todo.id));
+
+        $col.hide();
+        $container.append($col);
+        $col.fadeIn(500);
+    });
+}
+
+window.format_date = format_date;
+window.get_todos = get_todos;
+window.toggle = toggle;
+window.remove = remove;
+window.render_todos = render_todos;
+
+$(() => {
+    get_todos().then((todos) => render_todos(todos));
+});</code></pre>
+    </div>
+
+    <h2>3. Upute za pokretanje i predaju rješenja</h2>
+    <div class="note-box">
+        <strong>⚠️ Važno pravilo prije predaje (1 bod):</strong><br>
+        Uklonite sve mape <code>node_modules</code> (i u korijenu i u <code>server/</code> mapi) prije komprimiranja u <code>prezime_ime_kolokvij_1.zip</code> arhivu kako bi datoteka bila lagana za slanje i zadovoljila uvjet kolokvija.
+    </div>
+
+    <h3>Pokretanje poslužitelja (port 3000):</h3>
+    <pre><code>cd C:\Users\borna\Downloads\template_kol\template\server
+npm install
+node index.js   # ili npm run nodemon</code></pre>
+
+    <h3>Pokretanje klijenta (port 8080):</h3>
+    <pre><code>cd C:\Users\borna\Downloads\template_kol\template
+npm install
+npx vite</code></pre>
+
+    <p>Aplikacija se u pregledniku otvara na adresi: <strong><code>http://localhost:8080/index.html</code></strong>.</p>
+
+</body>
+</html>
