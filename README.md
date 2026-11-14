@@ -1,140 +1,41 @@
 # Priprema za kolokvij: Web programiranje
 
-Dvije probne pripreme za kolokvij s riješenim zadacima i objašnjenjima. Obje su ista vrsta aplikacije: **Express REST API** na poslužitelju i **Vite + Bootstrap 5 + Sass + jQuery** na klijentu. Razlikuju se samo podaci, boje, font i ikone.
-
-`Node.js` · `Express 5` · `Vite` · `Bootstrap 5.3` · `Sass` · `jQuery` · `Bootstrap Icons`
+Objašnjenja rješenja za tri probna kolokvija i upute za pokretanje.
 
 > Kliknite na bilo koji **▶ Zadatak** da otvorite rješenje i objašnjenje.
 
 ## Sadržaj
 
-- [Struktura repozitorija](#struktura-repozitorija)
-- [Arhitektura](#arhitektura)
 - [Pokretanje](#pokretanje)
-- [Usporedba priprema](#usporedba-priprema)
-- [Bodovanje](#bodovanje)
 - [Probni kolokvij 1: TaskProgress](#probni-kolokvij-1-taskprogress)
 - [Probni kolokvij 2: EventPulse](#probni-kolokvij-2-eventpulse)
-- [Provjera prije predaje](#provjera-prije-predaje)
-
-## Struktura repozitorija
-
-```text
-priprema za web/
-├── template_kol/                     ← Probni kolokvij 1 (TaskProgress, todos)
-│   ├── probni-kolokvij.pdf           tekst zadatka
-│   ├── objasnjenje.html              objašnjenje rješenja (i .pdf verzija)
-│   ├── capture.mp4                   snimka kako gotova aplikacija izgleda
-│   └── template/                     RIJEŠEN projekt
-│       ├── server/  (index.js, todos.js)
-│       └── src/     (index.html, js/index.js, scss/style.scss)
-│
-└── pripreme za web/                  ← Probni kolokvij 2 (EventPulse, events)
-    ├── probni-kolokvij-2.html        tekst zadatka
-    ├── objasnjenje_rjesenja.html     objašnjenje rješenja
-    ├── template/                     predložak s TODO komentarima (za vježbu)
-    └── rjesenje/                     RIJEŠEN projekt
-        ├── server/  (index.js, events.js)
-        └── src/     (index.html, js/index.js, scss/style.scss)
-```
-
-| | Zadatak | Predložak | Rješenje | Objašnjenje |
-|---|---|---|---|---|
-| **Kolokvij 1** | [probni-kolokvij.pdf](template_kol/probni-kolokvij.pdf) | nema (dostupno samo rješenje) | [template_kol/template](template_kol/template) | [objasnjenje.html](template_kol/objasnjenje.html) · [PDF](template_kol/objasnjenje_rjesenja.pdf) · [video](template_kol/capture.mp4) |
-| **Kolokvij 2** | [probni-kolokvij-2.html](pripreme%20za%20web/probni-kolokvij-2.html) | [template](pripreme%20za%20web/template) | [rjesenje](pripreme%20za%20web/rjesenje) | [objasnjenje_rjesenja.html](pripreme%20za%20web/objasnjenje_rjesenja.html) |
-
-> Za vježbu: otvorite `pripreme za web/template`, riješite TODO komentare pa usporedite s `rjesenje/`.
-
-## Arhitektura
-
-```mermaid
-flowchart LR
-    B["Preglednik<br/>index.html + index.js"] -->|"localhost:8080"| V["Vite dev server"]
-    V -->|"proxy /api"| E["Express<br/>localhost:3000"]
-    E --> D[("Polje u memoriji<br/>todos.js / events.js")]
-```
-
-Tok podataka na klijentu:
-
-```mermaid
-sequenceDiagram
-    participant UI as Kartice (jQuery)
-    participant API as Express /api
-    UI->>API: GET /api/events
-    API-->>UI: [ {id, title, timestamp, confirmed}, ... ]
-    Note over UI: render_events() + fadeIn(500)
-    UI->>API: PUT /api/events/:id  { confirmed: !status }
-    API-->>UI: ažurirani zapis
-    Note over UI: zamjena ikone statusa
-    UI->>API: DELETE /api/events/:id
-    API-->>UI: obrisani zapis
-    Note over UI: fadeOut(300) pa remove()
-```
-
-Vite proxy (`vite.config.js`) prosljeđuje svaki zahtjev na `/api` prema Expressu, pa klijent piše samo `$.get("/api/events")` bez porta i bez CORS-a:
-
-```js
-server: {
-  port: 8080,
-  proxy: { "/api": "http://localhost:3000" }
-}
-```
-
-Podaci žive **samo u memoriji**. Restart servera vraća početno stanje i generira nove UUID-ove.
+- [Probni kolokvij 3: ReadingList](#probni-kolokvij-3-readinglist)
 
 ## Pokretanje
 
-Potrebna su **dva terminala**. Primjer za kolokvij 2 (za kolokvij 1 zamijenite putanju s `template_kol/template`):
+Svaka aplikacija ima poslužitelj (Express, port 3000) i klijent (Vite, port 8080), pa su potrebna **dva terminala**:
+
+| Kolokvij | Mapa projekta |
+|---|---|
+| 1: TaskProgress | `template_kol/template` |
+| 2: EventPulse | `pripreme za web/rjesenje` |
+| 3: ReadingList | `kolokvij_3/rjesenje` |
 
 ```bash
 # Terminal 1: poslužitelj (port 3000)
-cd "pripreme za web/rjesenje/server"
+cd "<mapa projekta>/server"
 npm install
 npm run nodemon        # ili: node index.js
 
 # Terminal 2: klijent (port 8080)
-cd "pripreme za web/rjesenje"
+cd "<mapa projekta>"
 npm install
 npm run vite
 ```
 
-Otvorite http://localhost:8080.
+Otvorite http://localhost:8080. Vite prosljeđuje zahtjeve na `/api` prema poslužitelju na portu 3000, pa oba terminala moraju biti pokrenuta. Podaci su samo u memoriji: restart poslužitelja vraća početno stanje.
 
-## Usporedba priprema
-
-Kod je gotovo identičan. Na kolokviju se mijenja samo ovo:
-
-| | Kolokvij 1 | Kolokvij 2 |
-|---|---|---|
-| Aplikacija | **TaskProgress** | **EventPulse** |
-| Podaci | `server/todos.js` | `server/events.js` |
-| Polje statusa | `done` | `confirmed` |
-| API ruta | `/api/todos` | `/api/events` |
-| `$success` / `$warning` / `$danger` | `#3cb47c` / `#ffea63` / `#fe604e` | `#2ec4b6` / `#ff9f1c` / `#e71d36` |
-| `$primary` | `#26a69a` | `#4361ee` |
-| Font | Fraunces (serif) | Outfit (sans-serif) |
-| Navbar | `bg-success`, ikona `bi-stack` | `bg-primary`, ikona `bi-calendar-event` |
-| Ikona "da" | `bi-check-circle-fill text-success` | `bi-calendar-check-fill text-success` |
-| Ikona "ne" | `bi-x-circle-fill text-danger` | `bi-calendar-x-fill text-danger` |
-| Funkcije | `get_todos`, `render_todos` | `get_events`, `render_events` |
-| Kontejner | `#todos-container` | `#events-container` |
-| Zajedničko | `format_date`, `toggle`, `remove` | `format_date`, `toggle`, `remove` |
-
-## Bodovanje
-
-Isto za oba kolokvija:
-
-| Zadatak | Bodovi | Što se boduje |
-|---|---|---|
-| Zadatak 1 | 21 | Sass boje (1), font (2), navbar (4), UUID (2), uvoz u `index.js` (2), GET (1), PUT (3), DELETE (3), klijentski `get_*` (3) |
-| Zadatak 2 | 16 | sadržaj kartice (6), stil kartice i gumbi (4), responzivna mreža i razmaci (6) |
-| Zadatak 3 | 22 | `render_*` (5), `toggle` (2), `remove` (2), event listeneri (4), zamjena ikone (2), `format_date` (2), fade-in (5) |
-| Urednost | 1 | uklonjene sve `node_modules` mape prije zipanja |
-| **Ukupno** | **60** | prag prolaza **30** (50 %) |
-
-> **Pazite:** projekt koji se ne pokreće, promijenjena struktura mapa ili funkcija koja baca grešku = 0 bodova za taj dio. Neispravan kod **zakomentirajte**.
-
----
+Za vježbu umjesto `rjesenje` pokrenite `template` (kolokvij 2 i 3) i riješite TODO komentare.
 
 ## Probni kolokvij 1: TaskProgress
 
@@ -587,15 +488,79 @@ $(() => {
 
 ---
 
-## Provjera prije predaje
+## Probni kolokvij 3: ReadingList
 
-- [ ] Sass varijable boja su **iznad** `@import "bootstrap/scss/bootstrap"`
-- [ ] Font je uvezen i postavljen na `body`
-- [ ] `events.js` / `todos.js`: `randomUUID` uvezen, svaki zapis ima `id`, oba exporta (`export { … }` i `export default`)
-- [ ] `server/index.js`: `import`, `app.use(express.json())`, rute GET, PUT i DELETE
-- [ ] Prototip kartice u `index.html` je **zakomentiran**, kontejner `#…-container` postoji
-- [ ] Sve funkcije su na `window` i ne bacaju grešku (neispravan kod zakomentirati!)
-- [ ] Toggle mijenja ikonu, Remove radi fade-out, kartice se pojavljuju s fade-in
-- [ ] Obje aplikacije se pokreću (`npm run nodemon` + `npm run vite`)
-- [ ] Obrisane **sve** `node_modules` mape (1 bod)
-- [ ] Zip nazvan `prezime_ime_kolokvij_2.zip` i poslan na Teams
+Popis knjiga za čitanje. Kartica prikazuje naslov, datum dodavanja (`Added: M/D/YYYY`), status pročitanosti (`read`) i gumbe **Toggle** i **Remove**. Nova vježba po uzoru na prva dva kolokvija: ista struktura i bodovanje, druge boje, font, ikone i podaci.
+Zadatak: [`probni-kolokvij-3.html`](kolokvij_3/probni-kolokvij-3.html) · Predložak: [`kolokvij_3/template`](kolokvij_3/template) · Rješenje: [`kolokvij_3/rjesenje`](kolokvij_3/rjesenje)
+
+> Prvo pokušajte sami riješiti `template/`, a tek onda otvorite rješenje ispod.
+
+<details>
+<summary><b>Zadatak 1 (21 bod): Sass, navbar, server rute, <code>get_books</code></b></summary>
+
+```scss
+$success: #06d6a0;
+$warning: #ffd166;
+$danger: #ef476f;
+
+@import "bootstrap/scss/bootstrap";
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700&display=swap');
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css");
+
+body { font-family: "Nunito", sans-serif; }
+```
+
+```html
+<nav class="navbar bg-dark shadow mb-4">
+    <div class="container">
+        <a class="navbar-brand text-white d-flex align-items-center" href="#">
+            <i class="bi bi-book-half text-warning me-2 fs-5"></i>
+            <span>ReadingList</span>
+        </a>
+    </div>
+</nav>
+```
+
+Server (`books.js` + `index.js`) i `get_books` su isti kao u [kolokviju 2](#probni-kolokvij-2-eventpulse), samo s `books`, `/api/books` i poljem `read` umjesto `confirmed`.
+
+</details>
+
+<details>
+<summary><b>Zadatak 2 (16 bodova): prototip kartice</b></summary>
+
+```html
+<div class="card rounded-4 border shadow-sm p-3 h-100">
+    <div class="card-body d-flex flex-column justify-content-between p-0">
+        <div>
+            <h5 class="card-title fw-bold mb-2">Clean Code</h5>
+            <p class="card-text mb-1"><span class="fw-bold">Added:</span> 12/6/2025</p>
+            <p class="card-text mb-3"><span class="fw-bold">Status:</span> <i class="bi bi-bookmark-check-fill text-success"></i></p>
+        </div>
+        <div class="d-flex gap-2 mt-auto">
+            <button class="btn btn-outline-secondary rounded-pill flex-fill">Toggle</button>
+            <button class="btn btn-outline-secondary rounded-pill flex-fill">Remove</button>
+        </div>
+    </div>
+</div>
+```
+
+Mreža i kontejner: `<div id="books-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 w-100">`.
+
+</details>
+
+<details>
+<summary><b>Zadatak 3 (22 boda): <code>render_books</code>, <code>toggle</code>, <code>remove</code></b></summary>
+
+Isti kod kao u kolokviju 2, Zadatak 3. Razlike:
+
+```js
+const isRead = $statusIcon.hasClass("bi-bookmark-check-fill");
+const newStatus = !isRead;
+data: JSON.stringify({ read: newStatus }),
+// ikona: bi-bookmark-check-fill text-success  ↔  bi-bookmark-x-fill text-danger
+```
+
+Izvor: [`kolokvij_3/rjesenje/src/js/index.js`](kolokvij_3/rjesenje/src/js/index.js)
+
+</details>
