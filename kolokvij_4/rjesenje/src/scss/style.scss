@@ -1,0 +1,14 @@
+// Zadatak 1: Prilagodba Bootstrap boja (prije uvoza Bootstrapa!)
+$primary: #2a9d8f;
+$success: #52b788;
+$danger: #e63946;
+
+@import "bootstrap/scss/bootstrap";
+
+// Zadatak 1: Google font Poppins i Bootstrap Icons
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css");
+
+body {
+  font-family: "Poppins", sans-serif;
+}

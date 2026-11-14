@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PantryCheck</title>
+
+    <script type="module" src="./js/main.js"></script>
+    <script type="module" src="./js/index.js"></script>
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-dark bg-primary sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="bi bi-basket2-fill me-2 fs-5"></i>
+                <span>PantryCheck</span>
+            </a>
+            <span class="navbar-text">Kućna smočnica</span>
+        </div>
+    </nav>
+
+    <main class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-8">
+                <div class="card border-0 shadow rounded-3 overflow-hidden">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Namirnica</th>
+                                    <th class="d-none d-md-table-cell">Rok trajanja</th>
+                                    <th>Količina</th>
+                                    <th class="text-end">Akcije</th>
+                                </tr>
+                            </thead>
+                            <tbody id="items-body">
+                                <!-- Prototip retka (Zadatak 2):
+                                <tr>
+                                    <td class="fw-semibold">Mlijeko</td>
+                                    <td class="d-none d-md-table-cell">18.12.2025.</td>
+                                    <td><span class="badge rounded-pill bg-success">2</span></td>
+                                    <td class="text-end">
+                                        <div class="btn-group btn-group-sm">
+                                            <button class="btn btn-outline-secondary"><i class="bi bi-dash-lg"></i></button>
+                                            <button class="btn btn-outline-secondary"><i class="bi bi-plus-lg"></i></button>
+                                            <button class="btn btn-outline-danger"><i class="bi bi-trash3"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>

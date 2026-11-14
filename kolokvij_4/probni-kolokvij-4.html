@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probni kolokvij 4 - Web programiranje (PantryCheck)</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 18mm 15mm 18mm 15mm;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            color: #212529;
+            line-height: 1.5;
+            font-size: 13px;
+            background: #ffffff;
+            margin: 0;
+            padding: 24px;
+            max-width: 860px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            position: relative;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin: 0 0 4px 0;
+            color: #1a1a1a;
+            font-weight: 700;
+        }
+        .header .subtitle {
+            font-size: 16px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        .logo-placeholder {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid #212529;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo-placeholder::after {
+            content: "";
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid #212529;
+        }
+        .notice-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #2a9d8f;
+            padding: 12px 14px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+        .notice-box strong {
+            color: #000;
+        }
+        .warning-text {
+            color: #b02a37;
+            text-decoration: underline;
+            margin-top: 8px;
+            display: block;
+        }
+        .task-title {
+            color: #1d3557;
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 26px;
+            margin-bottom: 8px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 4px;
+        }
+        .points-badge {
+            color: #2a9d8f;
+            font-weight: 600;
+        }
+        p {
+            margin: 6px 0 10px 0;
+        }
+        code {
+            background-color: #f1f3f5;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 12px;
+            color: #c7254e;
+        }
+        .color-preview {
+            display: inline-block;
+            width: 13px;
+            height: 13px;
+            vertical-align: middle;
+            border-radius: 3px;
+            margin-right: 3px;
+            border: 1px solid rgba(0,0,0,0.2);
+        }
+        .points {
+            font-style: italic;
+            color: #495057;
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+        .summary-table th, .summary-table td {
+            border: 1px solid #dee2e6;
+            padding: 8px 10px;
+            text-align: left;
+        }
+        .summary-table th {
+            background-color: #f8f9fa;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo-placeholder"></div>
+        <h1>Probni kolokvij 4</h1>
+        <div class="subtitle">Web programiranje &bull; PantryCheck (Aplikacija za praćenje namirnica u smočnici)</div>
+    </div>
+
+    <div class="notice-box">
+        <strong>Napomena:</strong> Na kolokviju je dopušteno koristiti materijale s nastave te sve dostupne izvore s neta osim umjetne inteligencije i AI agenata. Nije dopušteno međusobno komunicirati. Rješenja se provjeravaju programom za otkrivanje plagijata. Komprimirano rješenje <code>prezime_ime_kolokvij_4.zip</code> pošaljite nastavniku na Teams. Prije komprimiranja rješenja uklonite sve mape <code>node_modules</code> <span class="points">(1 bod)</span>. Rješenje treba izgledati i ponašati se prema dolje navedenim specifikacijama.<br>
+        <span class="warning-text">Projekt koji se ne pokreće, projekt s promijenjenom strukturom mapa i promijenjenim nazivima datoteka, kod koji je kopiran i zalijepljen u neodgovarajuću datoteku, kod koji se nigdje ne poziva, ne prikazuje ili uzrokuje grešku pri izvršavanju neće biti bodovan. Funkcije koje pri pozivu uzrokuju grešku neće biti parcijalno bodovane stoga komentirajte neispravan kod.</span>
+    </div>
+
+    <p>
+        Za razliku od prethodnih kolokvija, podaci se ne prikazuju u mreži kartica nego u <strong>responzivnoj tablici</strong>. Svaka namirnica ima naziv (<code>name</code>), rok trajanja (<code>expires</code>, Unix milisekunde) i količinu (<code>quantity</code>, cijeli broj &ge; 0). Umjesto prekidača statusa, količina se mijenja gumbima <strong>[&minus;]</strong> i <strong>[+]</strong>.
+    </p>
+
+    <div class="task-title">Zadatak 1 <span class="points-badge">(21 bod)</span></div>
+
+    <p>
+        Raspakirajte predložak u mapi <code>template/</code> te pokrenite poslužiteljski i klijentski dio aplikacije. Prilagodite Bootstrap tako da su <code>primary</code>, <code>success</code> i <code>danger</code> boje redom:
+        <span class="color-preview" style="background:#2a9d8f;"></span><code>#2a9d8f</code>,
+        <span class="color-preview" style="background:#52b788;"></span><code>#52b788</code> i
+        <span class="color-preview" style="background:#e63946;"></span><code>#e63946</code> <span class="points">(1 bod)</span>.
+        Postavite font klijenta na <strong>Poppins</strong> <span class="points">(2 boda)</span>.
+    </p>
+
+    <p>
+        Isključivo korištenjem Bootstrap klasa, stvorite tamnu navigacijsku traku (<code>navbar-dark</code>) s bojom pozadine <code>bg-primary</code> koja <strong>ostaje zalijepljena na vrhu</strong> stranice prilikom skrolanja (<code>sticky-top</code>) i ima blagu sjenu <code>shadow-sm</code> <span class="points">(4 boda)</span>. Lijevo se nalazi ikona <code>basket2-fill</code> uz naslov <code>PantryCheck</code>, a desno tekst <em>Kućna smočnica</em> (<code>navbar-text</code>).
+    </p>
+
+    <p>
+        Na poslužitelju, svakom podatku iz polja u datoteci <code>pantry.js</code> dodajte jedinstveni UUID <span class="points">(2 boda)</span>. Učitajte polje iz tog modula u glavni modul <code>index.js</code> <span class="points">(2 boda)</span> te ondje definirajte rute:
+        <ul>
+            <li><code>GET /api/items</code> vraća sve namirnice <strong>sortirane po roku trajanja</strong>, najraniji rok prvi. Originalno polje ne smije promijeniti redoslijed <span class="points">(2 boda)</span></li>
+            <li><code>PATCH /api/items/:id</code> postavlja novu količinu iz tijela zahtjeva <code>{ "quantity": 3 }</code>. Ako namirnica ne postoji vraća status <code>404</code>, a ako <code>quantity</code> nije cijeli broj ili je manji od 0 vraća status <code>400</code> <span class="points">(3 boda)</span></li>
+            <li><code>DELETE /api/items/:id</code> briše namirnicu, a ako ne postoji vraća <code>404</code> <span class="points">(2 boda)</span></li>
+        </ul>
+    </p>
+
+    <p>
+        Na klijentu definirajte funkciju <code>get_items</code> za dohvaćanje svih zapisa <span class="points">(3 boda)</span>.
+    </p>
+
+    <div class="task-title">Zadatak 2 <span class="points-badge">(16 bodova)</span></div>
+
+    <p>
+        U <code>index.html</code> isključivo korištenjem HTML koda u kombinaciji s Bootstrap klasama napravite prototip <strong>tablice</strong> sa stupcima <em>Namirnica</em>, <em>Rok trajanja</em>, <em>Količina</em> i <em>Akcije</em> te <strong>jednim retkom</strong> s jednom namirnicom.
+    </p>
+
+    <p>
+        Definirajte sadržaj retka:
+        <ul>
+            <li>naziv namirnice <span class="points">(1 bod)</span></li>
+            <li>rok trajanja u formatu <code>DD.MM.YYYY.</code>, npr. <code>09.12.2025.</code> <span class="points">(1 bod)</span></li>
+            <li>količinu prikazanu u znački <code>badge rounded-pill bg-success</code> <span class="points">(2 boda)</span></li>
+            <li>tri gumba: <strong>[&minus;]</strong> (<code>dash-lg</code>), <strong>[+]</strong> (<code>plus-lg</code>) i brisanje (<code>trash3</code>) <span class="points">(2 boda)</span></li>
+        </ul>
+        i stil:
+        <ul>
+            <li>tablica unutar kartice <code>card border-0 shadow rounded-3 overflow-hidden</code>, tablica <code>table table-hover align-middle mb-0</code> sa zaglavljem <code>table-light</code> <span class="points">(1 bod)</span></li>
+            <li>gumbi spojeni u grupu <code>btn-group btn-group-sm</code>, pri čemu su [&minus;] i [+] <code>btn-outline-secondary</code>, a gumb za brisanje <code>btn-outline-danger</code> <span class="points">(3 boda)</span></li>
+        </ul>
+    </p>
+
+    <p>
+        U skladu sa zahtjevima responzivnog prikaza, dodijelite odgovarajuće Bootstrap klase:
+        <ul>
+            <li>tablica se na uskim ekranima vodoravno skrola umjesto da se lomi (<code>table-responsive</code>) <span class="points">(2 boda)</span></li>
+            <li>stupac <em>Rok trajanja</em> (i zaglavlje i ćelije) je <strong>skriven</strong> na malom ekranu, a vidljiv od <code>md</code> naviše <span class="points">(2 boda)</span></li>
+            <li>na velikom ekranu (<code>lg</code>) tablica zauzima 8 od 12 stupaca i centrirana je, a na manjima cijelu širinu <span class="points">(2 boda)</span></li>
+        </ul>
+        <code>tbody</code> tablice mora imati <code>id="items-body"</code>. Kada ste zadovoljni prototipom, zakomentirajte <strong>samo redak</strong> (<code>&lt;tr&gt;</code>), a tablicu ostavite jer se u nju dinamički renderira sadržaj.
+    </p>
+
+    <div class="page-break"></div>
+
+    <div class="task-title">Zadatak 3 <span class="points-badge">(22 boda)</span></div>
+
+    <p>
+        Na klijentu u datoteci <code>src/js/index.js</code> definirajte funkciju <code>render_items</code> <span class="points">(5 bodova)</span> koja će dinamički renderirati retke tablice s podacima dohvaćenim preko <code>get_items</code> unutar <code>#items-body</code>.
+    </p>
+
+    <p>
+        Zatim definirajte funkcije <code>change_qty(id, delta)</code> <span class="points">(2 boda)</span> i <code>remove(id)</code> <span class="points">(2 boda)</span>. <code>change_qty</code> šalje poslužitelju novu količinu (trenutna + <code>delta</code>), a prikaz ažurira tek nakon uspješnog odgovora. Podaci se moraju nadograditi i na poslužitelju i na klijentu. Pozivajte ih prilikom pritiska gumba [&minus;] / [+] (<code>delta</code> = &minus;1 / +1) <span class="points">(2 boda)</span> te gumba za brisanje <span class="points">(2 boda)</span>.
+    </p>
+
+    <p>
+        Značka količine je <code>bg-success</code> kada je količina veća od 0, a <code>bg-danger</code> kada je 0. Kada je količina 0, gumb [&minus;] mora biti onemogućen (<code>disabled</code>). Ovo pravilo vrijedi i pri iscrtavanju i nakon svake promjene <span class="points">(2 boda)</span>.
+    </p>
+
+    <p>
+        Rok trajanja je potrebno iz broja milisekundi počevši od Unix epohe pretvoriti u format <code>DD.MM.YYYY.</code> s vodećim nulama pomoću pomoćne funkcije <code>format_date</code> <span class="points">(2 boda)</span>.
+    </p>
+
+    <p>
+        Na kraju, implementirajte <strong>postupni (staggered) fade-in</strong> redaka pri inicijalnom učitavanju: svaki redak se pojavljuje u trajanju od 400 ms, a kreće 100 ms nakon prethodnog <span class="points">(5 bodova)</span>. Pri brisanju redak nestaje fade-out animacijom (300 ms).
+    </p>
+
+    <div class="task-title">Bodovna tablica</div>
+    <table class="summary-table">
+        <thead>
+            <tr>
+                <th>Zadatak</th>
+                <th>Bodovi</th>
+                <th>Ključne stavke provjere</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Zadatak 1</strong></td>
+                <td><strong>21 bod</strong></td>
+                <td>Sass varijable (1b), Poppins font (2b), sticky navbar s ikonom i tekstom (4b), crypto UUID (2b), uvoz u index.js (2b), sortirani GET (2b), PATCH s validacijom (3b), DELETE (2b), klijentski get_items (3b)</td>
+            </tr>
+            <tr>
+                <td><strong>Zadatak 2</strong></td>
+                <td><strong>16 bodova</strong></td>
+                <td>Sadržaj retka (naziv, rok, značka, gumbi) (6b), stil tablice i grupe gumbova (4b), table-responsive, skriveni stupac i centriranje (6b)</td>
+            </tr>
+            <tr>
+                <td><strong>Zadatak 3</strong></td>
+                <td><strong>22 boda</strong></td>
+                <td>render_items (5b), change_qty i PATCH poziv (2b), remove i DELETE poziv (2b), povezivanje gumba (4b), boja značke i onemogućen [&minus;] (2b), format_date DD.MM.YYYY. (2b), staggered fade-in (5b)</td>
+            </tr>
+            <tr>
+                <td><strong>Urednost koda</strong></td>
+                <td><strong>1 bod</strong></td>
+                <td>Uklonjene sve <code>node_modules</code> mape prije arhiviranja u zip</td>
+            </tr>
+            <tr>
+                <td><strong>UKUPNO</strong></td>
+                <td><strong>60 bodova</strong></td>
+                <td>Prag prolaznosti: 50% (30 bodova)</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

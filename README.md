@@ -1,6 +1,6 @@
 # Priprema za kolokvij: Web programiranje
 
-Objašnjenja rješenja za tri probna kolokvija i upute za pokretanje. Za svaki zadatak piše **što se traži**, **kako izgleda rješenje** i **zašto je rješenje baš takvo**.
+Objašnjenja rješenja za četiri probna kolokvija i upute za pokretanje. Za svaki zadatak piše **što se traži**, **kako izgleda rješenje** i **zašto je rješenje baš takvo**.
 
 > Kliknite na bilo koji **▶ Zadatak** da otvorite objašnjenje.
 
@@ -10,6 +10,7 @@ Objašnjenja rješenja za tri probna kolokvija i upute za pokretanje. Za svaki z
 - [Probni kolokvij 1: TaskProgress](#probni-kolokvij-1-taskprogress)
 - [Probni kolokvij 2: EventPulse](#probni-kolokvij-2-eventpulse)
 - [Probni kolokvij 3: ReadingList](#probni-kolokvij-3-readinglist)
+- [Probni kolokvij 4: PantryCheck](#probni-kolokvij-4-pantrycheck)
 
 ## Pokretanje
 
@@ -20,6 +21,7 @@ Svaka aplikacija ima poslužitelj (Express, port 3000) i klijent (Vite, port 808
 | 1: TaskProgress | `template_kol/template` |
 | 2: EventPulse | `pripreme za web/rjesenje` |
 | 3: ReadingList | `kolokvij_3/rjesenje` |
+| 4: PantryCheck | `kolokvij_4/rjesenje` |
 
 ```bash
 # Terminal 1: poslužitelj (port 3000)
@@ -35,7 +37,7 @@ npm run vite
 
 Otvorite http://localhost:8080. Vite prosljeđuje zahtjeve na `/api` prema poslužitelju na portu 3000, pa oba terminala moraju biti pokrenuta. Podaci su samo u memoriji: restart poslužitelja vraća početno stanje.
 
-Za vježbu umjesto `rjesenje` pokrenite `template` (kolokvij 2 i 3) i riješite TODO komentare.
+Za vježbu umjesto `rjesenje` pokrenite `template` (kolokvij 2, 3 i 4) i riješite TODO komentare.
 
 ---
 
@@ -1256,5 +1258,254 @@ window.render_books = render_books;
 ```
 
 **Zašto:** skripta je modul (`type="module"`), pa njezine funkcije nisu globalne. Ovako su dostupne testovima i konzoli preglednika.
+
+</details>
+
+---
+
+## Probni kolokvij 4: PantryCheck
+
+Inventar smočnice. Svaka namirnica ima naziv, rok trajanja (`expires`) i količinu (`quantity`). Ista tehnologija i ista težina kao prije, ali **drugačiji koncept**: umjesto mreže kartica podaci su u **responzivnoj tablici**, a umjesto Toggle gumba količina se mijenja gumbima **[−]** i **[+]**.
+
+> Prvo pokušajte sami riješiti `kolokvij_4/template` prema [tekstu zadatka](kolokvij_4/probni-kolokvij-4.html), a tek onda otvorite objašnjenja ispod.
+
+**Što je novo u odnosu na kolokvij 3:**
+
+| Kolokvij 3 | Kolokvij 4 |
+|---|---|
+| mreža kartica `row-cols-*` | tablica u `table-responsive`, stupac skriven s `d-none d-md-table-cell` |
+| `PUT` mijenja boolean | `PATCH` postavlja broj, uz validaciju (`400`) |
+| GET vraća polje kakvo jest | GET vraća kopiju **sortiranu** po roku trajanja |
+| zamjena ikone statusa | boja značke + onemogućen gumb [−] na 0 |
+| datum `M/D/YYYY` | datum `DD.MM.YYYY.` s vodećim nulama |
+| fade-in svih kartica odjednom | **postupni** fade-in, redak po redak |
+
+<details>
+<summary><b>Zadatak 1 (21 bod): boje, font, sticky navigacija, poslužitelj i <code>get_items</code></b></summary>
+
+### 1a. Boje i font Poppins (1 + 2 boda)
+
+```scss
+$primary: #2a9d8f;
+$success: #52b788;
+$danger: #e63946;
+
+@import "bootstrap/scss/bootstrap";
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css");
+
+body { font-family: "Poppins", sans-serif; }
+```
+
+**Zašto:** Sass varijable moraju biti definirane **prije** uvoza Bootstrapa jer Bootstrap koristi `!default`, tj. uzima vrijednost samo ako varijabla još ne postoji.
+
+### 1b. Sticky navigacija (4 boda)
+
+```html
+<nav class="navbar navbar-dark bg-primary sticky-top shadow-sm">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+            <i class="bi bi-basket2-fill me-2 fs-5"></i>
+            <span>PantryCheck</span>
+        </a>
+        <span class="navbar-text">Kućna smočnica</span>
+    </div>
+</nav>
+```
+
+**Zašto:**
+- `navbar-dark` daje svijetli tekst brandu i `navbar-text` na tamnoj pozadini, pa ne treba ručno `text-white`.
+- `sticky-top` drži traku na vrhu pri skrolanju (novo u odnosu na prijašnje kolokvije).
+- `.navbar > .container` je već flex s `justify-content-between`, pa tekst sam ode desno.
+
+### 1c. UUID i uvoz (2 + 2 boda)
+
+```js
+// pantry.js
+import { randomUUID } from "crypto";
+const items = [ { id: randomUUID(), name: "Mlijeko", expires: 1766055600000, quantity: 2 }, /* ... */ ];
+export { items };
+export default items;
+
+// index.js
+import items from './pantry.js'
+app.use(express.json());
+```
+
+### 1d. Rute (2 + 3 + 2 boda)
+
+```js
+app.get("/api/items", (req, res) => {
+    res.json([...items].sort((a, b) => a.expires - b.expires));
+});
+
+app.patch("/api/items/:id", (req, res) => {
+    const item = items.find((e) => e.id === req.params.id);
+    if (!item) return res.status(404).json({ error: "Item not found" });
+    const { quantity } = req.body;
+    if (!Number.isInteger(quantity) || quantity < 0) {
+        return res.status(400).json({ error: "Quantity must be an integer >= 0" });
+    }
+    item.quantity = quantity;
+    return res.json(item);
+});
+
+app.delete("/api/items/:id", (req, res) => {
+    const index = items.findIndex((e) => e.id === req.params.id);
+    if (index === -1) return res.status(404).json({ error: "Item not found" });
+    const [removed] = items.splice(index, 1);
+    return res.json(removed);
+});
+```
+
+**Zašto:**
+- `sort` mijenja polje **na mjestu**. `[...items]` radi kopiju, pa originalno polje ostaje u izvornom redoslijedu (to se izričito traži).
+- `a.expires - b.expires` je negativno kad `a` ističe prije, pa najraniji rok ide prvi.
+- `Number.isInteger` odbija `1.5`, `"3"` (string) i `undefined` odjednom. Bez toga bi klijent mogao spremiti negativnu ili neispravnu količinu.
+- `PATCH` (a ne `PUT`) jer mijenjamo samo jedno polje zapisa.
+
+### 1e. `get_items` (3 boda)
+
+```js
+function get_items(callback) {
+    const request = $.get("/api/items");
+    if (typeof callback === "function") request.then(callback);
+    return request;
+}
+```
+
+</details>
+
+<details>
+<summary><b>Zadatak 2 (16 bodova): prototip tablice</b></summary>
+
+```html
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+        <div class="card border-0 shadow rounded-3 overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Namirnica</th>
+                            <th class="d-none d-md-table-cell">Rok trajanja</th>
+                            <th>Količina</th>
+                            <th class="text-end">Akcije</th>
+                        </tr>
+                    </thead>
+                    <tbody id="items-body">
+                        <!-- prototip retka (zakomentiran):
+                        <tr>
+                            <td class="fw-semibold">Mlijeko</td>
+                            <td class="d-none d-md-table-cell">18.12.2025.</td>
+                            <td><span class="badge rounded-pill bg-success">2</span></td>
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm">
+                                    <button class="btn btn-outline-secondary"><i class="bi bi-dash-lg"></i></button>
+                                    <button class="btn btn-outline-secondary"><i class="bi bi-plus-lg"></i></button>
+                                    <button class="btn btn-outline-danger"><i class="bi bi-trash3"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                        -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+```
+
+**Zašto:**
+- `col-12 col-lg-8` + `justify-content-center`: puna širina na malim ekranima, 8/12 i centrirano od `lg`.
+- `table-responsive` dodaje vodoravni scroll kad tablica ne stane, umjesto da se stupci zgnječe.
+- `d-none d-md-table-cell`: skriveno ispod `md`. Mora biti `table-cell`, a ne `d-md-block`, inače ćelija ispadne iz rasporeda tablice. Klase idu i na `<th>` i na `<td>`, inače se stupci pomaknu.
+- `overflow-hidden` na kartici reže kutove tablice da prate `rounded-3`.
+- Za razliku od kartica, ovdje se zakomentira **samo `<tr>`**: tablica i zaglavlje ostaju, a JS puni `#items-body`.
+
+</details>
+
+<details>
+<summary><b>Zadatak 3 (22 boda): render, količina, brisanje, datum i postupni fade-in</b></summary>
+
+### `format_date` (2 boda)
+
+```js
+function format_date(timestamp) {
+    const d = new Date(timestamp);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    return `${day}.${month}.${d.getFullYear()}.`;
+}
+```
+
+**Zašto:** `padStart(2, "0")` pretvara `9` u `"09"`. `getMonth()` počinje od 0, zato `+ 1`. Hrvatski format ima točku i iza godine.
+
+### Pomoćna `set_qty` i boja značke (2 boda)
+
+```js
+function set_qty($row, quantity) {
+    $row.find(".qty-badge")
+        .text(quantity)
+        .toggleClass("bg-success", quantity > 0)
+        .toggleClass("bg-danger", quantity === 0);
+    $row.find(".btn-minus").prop("disabled", quantity === 0);
+}
+```
+
+**Zašto:** isto pravilo treba i pri iscrtavanju i nakon svake promjene, pa je u jednoj funkciji. `toggleClass(klasa, uvjet)` dodaje klasu kad je uvjet istinit, a miče kad nije. Onemogućen [−] znači da korisnik ne može ni pokušati otići ispod 0 (a poslužitelj bi ionako vratio `400`).
+
+### `change_qty` (2 boda)
+
+```js
+function change_qty(id, delta) {
+    const $row = $(`[data-id="${id}"]`);
+    const current = Number($row.find(".qty-badge").text());
+    return $.ajax({
+        url: `/api/items/${id}`,
+        method: "PATCH",
+        contentType: "application/json",
+        data: JSON.stringify({ quantity: current + delta }),
+        success: (updated) => set_qty($row, updated.quantity),
+        error: (err) => console.error("Greška pri promjeni količine:", err)
+    });
+}
+```
+
+**Zašto:** šalje se **nova vrijednost**, a ne `delta`, jer ruta postavlja količinu. Prikaz se ažurira iz odgovora poslužitelja, pa klijent i poslužitelj ne mogu razići.
+
+### `remove` (2 boda) i fade-out
+
+Isto kao u kolokviju 3: `DELETE`, pa `$row.fadeOut(300, function () { $(this).remove(); })`.
+
+### `render_items` (5), gumbi (2 + 2) i postupni fade-in (5 bodova)
+
+```js
+items.forEach((item, i) => {
+    const $row = $(`<tr data-id="${item.id}"> ... </tr>`);
+
+    set_qty($row, item.quantity);
+    $row.find(".btn-minus").on("click", () => change_qty(item.id, -1));
+    $row.find(".btn-plus").on("click", () => change_qty(item.id, 1));
+    $row.find(".btn-remove").on("click", () => remove(item.id));
+
+    $row.hide();
+    $body.append($row);
+    $row.delay(i * 100).fadeIn(400);
+});
+```
+
+**Zašto:** drugi argument `forEach` je indeks. `delay(i * 100)` odgađa početak animacije: prvi redak kreće odmah, drugi nakon 100 ms, treći nakon 200 ms… pa se redci pojavljuju jedan za drugim.
+
+### Funkcije na `window`
+
+```js
+window.format_date = format_date;
+window.get_items = get_items;
+window.change_qty = change_qty;
+window.remove = remove;
+window.render_items = render_items;
+```
 
 </details>
