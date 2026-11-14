@@ -1,0 +1,16 @@
+// Zadatak 1:
+// 1. Prilagodite Bootstrap boje: success, warning i danger redom na #06d6a0, #ffd166 i #ef476f (1 bod)
+// (Primijetite: varijable se moraju definirati PRIJE uvoza Bootstrapa!)
+
+
+@import "bootstrap/scss/bootstrap";
+
+// Zadatak 1:
+// 2. Uvezite font "Nunito" s Google Fonts i postavite ga na body (2 boda)
+// 3. Uvezite Bootstrap Icons
+
+
+main {
+    display: flex;
+    flex: 1;
+}
