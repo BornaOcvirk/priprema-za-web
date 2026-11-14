@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probni kolokvij 2 - Web programiranje (EventPulse)</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 18mm 15mm 18mm 15mm;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            color: #212529;
+            line-height: 1.5;
+            font-size: 13px;
+            background: #ffffff;
+            margin: 0;
+            padding: 24px;
+            max-width: 860px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            position: relative;
+        }
+        .header h1 {
+            font-size: 28px;
+            margin: 0 0 4px 0;
+            color: #1a1a1a;
+            font-weight: 700;
+        }
+        .header .subtitle {
+            font-size: 16px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+        .logo-placeholder {
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid #212529;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo-placeholder::after {
+            content: "";
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid #212529;
+        }
+        .notice-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #4361ee;
+            padding: 12px 14px;
+            margin-bottom: 20px;
+            font-size: 12px;
+            line-height: 1.45;
+        }
+        .notice-box strong {
+            color: #000;
+        }
+        .warning-text {
+            color: #b02a37;
+            text-decoration: underline;
+            margin-top: 8px;
+            display: block;
+        }
+        .task-title {
+            color: #1d3557;
+            font-size: 18px;
+            font-weight: 700;
+            margin-top: 26px;
+            margin-bottom: 8px;
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 4px;
+        }
+        .points-badge {
+            color: #4361ee;
+            font-weight: 600;
+        }
+        p {
+            margin: 6px 0 10px 0;
+        }
+        code {
+            background-color: #f1f3f5;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 12px;
+            color: #c7254e;
+        }
+        .color-preview {
+            display: inline-block;
+            width: 13px;
+            height: 13px;
+            vertical-align: middle;
+            border-radius: 3px;
+            margin-right: 3px;
+            border: 1px solid rgba(0,0,0,0.2);
+        }
+        .points {
+            font-style: italic;
+            color: #495057;
+        }
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+        .summary-table th, .summary-table td {
+            border: 1px solid #dee2e6;
+            padding: 8px 10px;
+            text-align: left;
+        }
+        .summary-table th {
+            background-color: #f8f9fa;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo-placeholder"></div>
+        <h1>Probni kolokvij 2</h1>
+        <div class="subtitle">Web programiranje &bull; EventPulse (Aplikacija za praćenje događaja)</div>
+    </div>
+
+    <div class="notice-box">
+        <strong>Napomena:</strong> Na kolokviju je dopušteno koristiti materijale s nastave te sve dostupne izvore s neta osim umjetne inteligencije i AI agenata. Nije dopušteno međusobno komunicirati. Rješenja se provjeravaju programom za otkrivanje plagijata. Komprimirano rješenje <code>prezime_ime_kolokvij_2.zip</code> pošaljite nastavniku na Teams. Prije komprimiranja rješenja uklonite sve mape <code>node_modules</code> <span class="points">(1 bod)</span>. Rješenje treba izgledati i ponašati se prema dolje navedenim specifikacijama.<br>
+        <span class="warning-text">Projekt koji se ne pokreće, projekt s promijenjenom strukturom mapa i promijenjenim nazivima datoteka, kod koji je kopiran i zalijepljen u neodgovarajuću datoteku, kod koji se nigdje ne poziva, ne prikazuje ili uzrokuje grešku pri izvršavanju neće biti bodovan. Funkcije koje pri pozivu uzrokuju grešku neće biti parcijalno bodovane stoga komentirajte neispravan kod.</span>
+    </div>
+
+    <div class="task-title">Zadatak 1 <span class="points-badge">(21 bod)</span></div>
+    
+    <p>
+        Raspakirajte predložak u mapi <code>template/</code> te pokrenite poslužiteljski i klijentski dio aplikacije. Prilagodite Bootstrap tako da su <code>success</code>, <code>warning</code> i <code>danger</code> boje redom:
+        <span class="color-preview" style="background:#2ec4b6;"></span><code>#2ec4b6</code>, 
+        <span class="color-preview" style="background:#ff9f1c;"></span><code>#ff9f1c</code> i 
+        <span class="color-preview" style="background:#e71d36;"></span><code>#e71d36</code> <span class="points">(1 bod)</span>. 
+        Postavite font klijenta na <strong>Outfit</strong> <span class="points">(2 boda)</span>.
+    </p>
+
+    <p>
+        Isključivo korištenjem Bootstrap klasa, stvorite navigacijsku traku s bojom pozadine <code>bg-primary</code> <span class="points">(4 boda)</span>. Primijetite da se ispod navigacijske trake nalazi sjena, a nju možete stvoriti korištenjem klase <code>shadow</code>. Ikona u navigaciji je <code>calendar-event</code> u boji <code>text-warning</code> uz naslov <code>EventPulse</code>.
+    </p>
+
+    <p>
+        Na poslužitelju, svakom podatku iz polja u datoteci <code>events.js</code> dodajte jedinstveni UUID <span class="points">(2 boda)</span>. Učitajte polje iz tog modula u glavni modul <code>index.js</code> <span class="points">(2 boda)</span>, ondje definirajte rutu za dohvaćanje svih zapisa <span class="points">(1 bod)</span>, uređivanje postojećeg <span class="points">(3 boda)</span> i brisanje postojećeg <span class="points">(3 boda)</span>.
+    </p>
+
+    <p>
+        Na klijentu definirajte funkciju <code>get_events</code> za dohvaćanje svih zapisa <span class="points">(3 boda)</span>.
+    </p>
+
+    <div class="task-title">Zadatak 2 <span class="points-badge">(16 bodova)</span></div>
+
+    <p>
+        U <code>index.html</code> isključivo korištenjem HTML koda u kombinaciji s Bootstrap klasama napravite prototip koji prikazuje jednu karticu s jednim događajem (Event zapisom).
+    </p>
+
+    <p>
+        Definirajte sadržaj:
+        <ul>
+            <li>naslov događaja <span class="points">(1 bod)</span></li>
+            <li>datum događaja u formatu <code>When: M/D/YYYY</code> <span class="points">(1 bod)</span></li>
+            <li>status s pripadajućom ikonom <span class="points">(2 boda)</span></li>
+            <li>dva gumba unutar kartice: <strong>Toggle</strong> i <strong>Remove</strong> <span class="points">(2 boda)</span></li>
+        </ul>
+        i stil kartice:
+        <ul>
+            <li>zaobljenost kartice <code>rounded-4</code>, tanki obrub <code>border</code> i sjena <code>shadow-sm</code> <span class="points">(1 bod)</span></li>
+            <li>stil gumbova u obliku pilula: <code>btn btn-outline-secondary rounded-pill flex-fill</code> <span class="points">(3 boda)</span></li>
+        </ul>
+        Ikone za status su <code>calendar-x-fill text-danger</code> (kada događaj nije potvrđen) i <code>calendar-check-fill text-success</code> (kada je potvrđen).
+    </p>
+
+    <p>
+        U skladu sa zahtjevima responzivnog prikaza, dodijelite odgovarajuće Bootstrap klase čime će stranica postati responzivna:
+        <ul>
+            <li>raspored kartica u mreži: <strong>3 stupca</strong> na velikom ekranu (<code>lg</code>), <strong>2 stupca</strong> na srednjem ekranu (<code>md</code>) te <strong>1 stupac</strong> na malom ekranu <span class="points">(2 boda)</span></li>
+            <li>vodoravni raspored gumbova s razmakom na dnu kartice <span class="points">(2 boda)</span></li>
+            <li>odgovarajući razmaci (gutters) između kartica (<code>g-4</code>) <span class="points">(2 boda)</span></li>
+        </ul>
+        Kada ste zadovoljni sa sadržajem i stilom jedne kartice, kod zakomentirajte i iskoristite za dinamičko renderiranje sadržaja.
+    </p>
+
+    <div class="page-break"></div>
+
+    <div class="task-title">Zadatak 3 <span class="points-badge">(22 boda)</span></div>
+
+    <p>
+        Na klijentu u datoteci <code>src/js/index.js</code> definirajte funkciju <code>render_events</code> <span class="points">(5 bodova)</span> koja će dinamički renderirati podatke dohvaćene preko <code>get_events</code> unutar kontejnera <code>#events-container</code>.
+    </p>
+
+    <p>
+        Zatim definirajte funkcije <code>remove</code> <span class="points">(2 boda)</span> i <code>toggle</code> <span class="points">(2 boda)</span> pri čemu se podaci moraju nadograditi i na poslužitelju i klijentu te ih pozivajte prilikom pritiska odgovarajućih gumbova <span class="points">(2 boda + 2 boda)</span>.
+    </p>
+
+    <p>
+        Prilikom promjene statusa (toggle), u prikazu je potrebno promijeniti ikonu koja predstavlja status između <code>calendar-check-fill text-success</code> i <code>calendar-x-fill text-danger</code> <span class="points">(2 boda)</span>.
+    </p>
+
+    <p>
+        Datum je potrebno iz broja milisekundi počevši od Unix epohe (timestamp) pretvoriti u odgovarajući format <code>M/D/YYYY</code> pomoću pomoćne funkcije <code>format_date</code> <span class="points">(2 boda)</span>.
+    </p>
+
+    <p>
+        Na kraju, implementirajte <strong>fade-in</strong> efekt nad karticama pri inicijalnom učitavanju u trajanju od 500 ms <span class="points">(5 bodova)</span> te fade-out animaciju (300 ms) pri uklanjanju kartice.
+    </p>
+
+    <div class="task-title">Bodovna tablica</div>
+    <table class="summary-table">
+        <thead>
+            <tr>
+                <th>Zadatak</th>
+                <th>Bodovi</th>
+                <th>Ključne stavke provjere</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Zadatak 1</strong></td>
+                <td><strong>21 bod</strong></td>
+                <td>Sass varijable (1b), Outfit font (2b), Navbar sa sjenom i ikonom (4b), crypto UUID (2b), uvoz u index.js (2b), GET ruta (1b), PUT ruta (3b), DELETE ruta (3b), klijentski get_events (3b)</td>
+            </tr>
+            <tr>
+                <td><strong>Zadatak 2</strong></td>
+                <td><strong>16 bodova</strong></td>
+                <td>Sadržaj kartice (naslov, datum, status, gumbi) (6b), oblikovanje i zaobljenost rounded-4 (4b), responzivna mreža 1/2/3 stupca i razmaci (6b)</td>
+            </tr>
+            <tr>
+                <td><strong>Zadatak 3</strong></td>
+                <td><strong>22 boda</strong></td>
+                <td>render_events (5b), toggle funkcija i PUT poziv (2b), remove funkcija i DELETE poziv (2b), povezivanje event listenera na gumbe (4b), zamjena statusne ikone (2b), format_date funkcija (2b), animacija fade-in (5b)</td>
+            </tr>
+            <tr>
+                <td><strong>Urednost koda</strong></td>
+                <td><strong>1 bod</strong></td>
+                <td>Uklonjene sve <code>node_modules</code> mape prije arhiviranja u zip</td>
+            </tr>
+            <tr>
+                <td><strong>UKUPNO</strong></td>
+                <td><strong>60 bodova</strong></td>
+                <td>Prag prolaznosti: 50% (30 bodova)</td>
+            </tr>
+        </tbody>
+    </table>
+
+</body>
+</html>
