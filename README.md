@@ -860,7 +860,7 @@ window.render_events = render_events;
 
 Popis knjiga za čitanje. Svaka knjiga ima naslov, datum dodavanja (`timestamp`) i status `read` (pročitana ili nije). Kartica prikazuje te podatke i gumbe **Toggle** (mijenja pročitanost) i **Remove** (briše knjigu).
 
-> Prvo pokušajte sami riješiti `kolokvij_3/template` prema [tekstu zadatka](kolokvij_3/probni-kolokvij-3.html), a tek onda otvorite objašnjenja ispod.
+> Prvo pokušajte sami riješiti `kolokvij_3/template` prema [tekstu zadatka](kolokvij_3/probni-kolokvij-3.html), a tek onda otvorite objašnjenja ispod ili [objasnjenje_rjesenja.html](kolokvij_3/objasnjenje_rjesenja.html).
 
 <details>
 <summary><b>Zadatak 1 (21 bod): boje, font, navigacija, poslužitelj i <code>get_books</code></b></summary>
