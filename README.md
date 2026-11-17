@@ -7,6 +7,7 @@ Objašnjenja rješenja za četiri probna kolokvija i upute za pokretanje. Za sva
 ## Sadržaj
 
 - [Pokretanje](#pokretanje)
+- [Izrada server mape od nule](#izrada-server-mape-od-nule)
 - [Probni kolokvij 1: TaskProgress](#probni-kolokvij-1-taskprogress)
 - [Probni kolokvij 2: EventPulse](#probni-kolokvij-2-eventpulse)
 - [Probni kolokvij 3: ReadingList](#probni-kolokvij-3-readinglist)
@@ -38,6 +39,148 @@ npm run vite
 Otvorite http://localhost:8080. Vite prosljeđuje zahtjeve na `/api` prema poslužitelju na portu 3000, pa oba terminala moraju biti pokrenuta. Podaci su samo u memoriji: restart poslužitelja vraća početno stanje.
 
 Za vježbu umjesto `rjesenje` pokrenite `template` (kolokvij 2, 3 i 4) i riješite TODO komentare.
+
+---
+
+## Izrada server mape od nule
+
+Svi kolokviji imaju istu strukturu poslužitelja. Primjer je `kolokvij_4/rjesenje/server`, a za druge kolokvije mijenjaju se samo nazivi (vidi [datoteku s podacima](#4-datoteka-s-podacima)).
+
+<details>
+<summary><b>▶ Koraci: od prazne mape do pokrenutog poslužitelja</b></summary>
+
+### 1. Mapa i npm
+
+```bash
+mkdir server
+cd server
+npm init -y
+npm install express nodemon
+```
+
+- `npm init -y` stvara `package.json` sa zadanim vrijednostima.
+- **express** je web okvir (rute, JSON). **nodemon** ponovno pokreće poslužitelj pri svakom spremanju datoteke.
+- `node_modules/` i `package-lock.json` nastaju sami, ne uređuju se ručno.
+
+### 2. `package.json`
+
+Dodajte:
+
+```json
+"type": "module",
+"scripts": {
+  "start": "node index.js",
+  "nodemon": "nodemon index.js"
+}
+```
+
+**Zašto:** `"type": "module"` omogućuje `import express from 'express'` umjesto `require(...)`. Bez toga Node javlja grešku već na prvom `import`.
+
+### 3. `index.js`
+
+```js
+import express from 'express'
+import items from './pantry.js'   // nastavak .js je obavezan kod ES modula
+
+const app = express()
+app.use(express.json());           // bez ovoga je req.body undefined
+
+app.get("/api/items", (req, res) => {
+    res.json([...items].sort((a, b) => a.expires - b.expires));
+});
+
+app.patch("/api/items/:id", (req, res) => {
+    const item = items.find((e) => e.id === req.params.id);
+    if (!item) return res.status(404).json({ error: "Item not found" });
+    const { quantity } = req.body;
+    if (!Number.isInteger(quantity) || quantity < 0) {
+        return res.status(400).json({ error: "Quantity must be an integer >= 0" });
+    }
+    item.quantity = quantity;      // find vraća referencu, pa se mijenja original
+    return res.json(item);
+});
+
+app.delete("/api/items/:id", (req, res) => {
+    const index = items.findIndex((e) => e.id === req.params.id);
+    if (index === -1) return res.status(404).json({ error: "Item not found" });
+    const [removed] = items.splice(index, 1);
+    return res.json(removed);
+});
+
+app.listen(3000, () => console.log('Server is running on http://localhost:3000'));
+```
+
+**Zašto:**
+- Svaka ruta koja radi s jednim zapisom ide istim redom: **pronađi** (inače `404`), **provjeri ulaz** (inače `400`), **promijeni**, **vrati rezultat**.
+- `[...items]` radi kopiju jer `sort` mijenja polje na mjestu.
+- `DELETE` koristi `findIndex` umjesto `find` jer `splice` treba poziciju, a ne sam objekt.
+- `/hello`, `express.static("../client/")` i `urlencoded` iz rješenja nijedan zadatak ne koristi, pa se mogu izostaviti.
+
+### 4. Datoteka s podacima
+
+Datoteka s podacima je "baza": obično polje u memoriji. Restart poslužitelja vraća početno stanje. Svaki kolokvij ima isti predložak:
+
+```js
+import { randomUUID } from "crypto";
+
+const <kolekcija> = [
+  { id: randomUUID(), <tekst>: "...", <datum>: <ms timestamp>, <stanje>: <vrijednost> },
+  // ... oko 9 zapisa
+];
+
+export { <kolekcija> };
+export default <kolekcija>;
+```
+
+| Kolokvij | Datoteka | Polje | Tekst | Datum | Stanje |
+|---|---|---|---|---|---|
+| 1 | `todos.js` | `todos` | `title` | `timestamp` | `done` (boolean) |
+| 3 | `books.js` | `books` | `title` | `timestamp` | `read` (boolean) |
+| 4 | `pantry.js` | `items` | `name` | `expires` | `quantity` (broj) |
+
+**Polja zapisa:**
+- **`id`**: uvijek `randomUUID()`. To je string, pa se uspoređuje izravno s `req.params.id` (koji je također string), bez pretvaranja u broj.
+- **tekst**: ono što se prikazuje u popisu.
+- **datum**: timestamp u milisekundama, pa je sortiranje samo `a.datum - b.datum`, a klijentska `format_date` ga pretvara u čitljiv datum.
+- **stanje**: ono što mijenja `PUT`/`PATCH` ruta. Boolean se okreće s `!item.done`, a broj se postavlja iz `req.body` uz validaciju.
+
+**Kako napisati za novi kolokvij:**
+1. Iz teksta zadatka pročitajte naziv entiteta i polja. Polje nazovite množinom (`todos`, `books`, `items`) jer se ista riječ koristi u ruti `/api/<kolekcija>`.
+2. Nazive polja prepišite **točno** kako ih koristi zadatak ili klijent u `src/js/`. Ako klijent čita `item.expires`, polje se mora zvati `expires`.
+3. Napravite oko 9 zapisa koji pokrivaju sve slučajeve koje klijent prikazuje: `true` i `false`, količinu `0` i veću od `0`, datume koji nisu već poredani (da se vidi radi li sortiranje).
+
+**Zašto dva exporta:** `export default` omogućuje `import items from './pantry.js'` u `index.js`. `export { items }` dodatno omogućuje `import { items } from ...`. Dovoljan je jedan, ali s oba radi bilo koji način uvoza.
+
+### 5. Koji broj ide u polje datuma
+
+Broj je **Unix timestamp u milisekundama**: broj milisekundi od 1. 1. 1970. 00:00 UTC. JavaScript tako interno pamti svaki datum, pa ga `new Date(broj)` i `format_date` čitaju izravno.
+
+U konzoli preglednika (F12) ili s `node -e "console.log(...)"`:
+
+```js
+new Date("2026-12-18").getTime()          // 1797552000000 (ponoć UTC)
+new Date("2026-12-18T12:00").getTime()    // s vremenom, u lokalnoj zoni
+Date.now()                                // sada
+Date.now() + 3 * 24 * 60 * 60 * 1000      // za 3 dana
+
+new Date(1766055600000).toISOString()     // obrnuto: "2025-12-18T11:00:00.000Z"
+```
+
+**Provjera:** broj od **13 znamenki** koji počinje s `17…` je datum otprilike od 2023. do 2027. Ako ima 10 znamenki, to su sekunde: pomnožite s 1000, inače će svi datumi biti siječanj 1970.
+
+**Koje datume odabrati:** točne vrijednosti nisu bitne, nego redoslijed i raspon. Izmiješajte ih u polju da se vidi sortiranje. Ako zadatak ovisi o "danas" (npr. istekli rok), stavite neke datume u prošlost, a neke u budućnost.
+
+### 6. Povezivanje s klijentom i pokretanje
+
+Na poslužitelju ne treba ništa dodatno. `vite.config.js` u nadređenoj mapi već ima:
+
+```js
+proxy: { "/api": "http://localhost:3000" }
+```
+
+Klijent (port 8080) zove `/api/items`, a Vite to prosljeđuje Expressu na portu 3000. Zato sve rute počinju s `/api` i zato ne treba CORS. Pokretanje je opisano u [Pokretanju](#pokretanje). Poslužitelj se može provjeriti i bez klijenta: otvorite http://localhost:3000/api/items.
+
+</details>
 
 ---
 
