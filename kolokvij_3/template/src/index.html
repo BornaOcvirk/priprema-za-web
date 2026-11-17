@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <script type="module" src="./js/main.js"></script>
     <script type="module" src="./js/index.js"></script>
 </head>
+
 <body>
 
     <!-- Zadatak 1: Navigacijska traka (4 boda)
@@ -16,6 +18,14 @@
          - Ikona: bi-book-half (u text-warning boji)
          - Naslov branda: ReadingList
     -->
+    <nav class="navbar bg-dark shadow mb-4">
+        <div class="container">
+            <a class="navbar-brand text-white d-flex align-items-center" href="#">
+                <i class="bi bi-book-half text-warning me-2 fs-5"></i>
+                <span>ReadingList</span>
+            </a>
+        </div>
+    </nav>
 
 
     <main class="container mb-5">
@@ -27,10 +37,26 @@
              - Responzivnost: 1 stupac na malom, 2 na srednjem, 3 na velikom ekranu
              - Nakon izrade, zakomentirajte prototip!
         -->
-
-        <div id="books-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 w-100">
+        <!-- div class  = "row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            <div class = "col">
+                <div class = "card rounded-4 border shadow-sm p-3 h-100">
+                    <div class = "card-body d-flex flex-column justify-content-between p-0">
+                        <h5 class = "card-title">Naslov knjige</h5>
+                        <p class = "card-text mb-1"><span class = "fw-bold">Added:</span> 10/10/2023 </p>
+                        <p class = "card-text mb-3"><span class = "fw-bold">Status:</span><i class = "bi bi-bookmark-check-fill text-success"></i></p>
+                    </div>
+                    <div class = "d-flex gap-2 mt-auto">
+                        <button class = "btn btn-outline-secundary roundeded-pill flex-fill">Toggle</button>
+                        <button class = "btn btn-outline-secundary roundeded-pill flex-fill">Remove</button>
+                    </div>
+                </div>    
+            </div>
+        </div>
+        -->
+        <div id="books-container" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         </div>
     </main>
 
 </body>
+
 </html>
