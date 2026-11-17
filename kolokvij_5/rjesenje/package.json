@@ -1,0 +1,18 @@
+{
+  "name": "kolokvij_5_todo_app_rjesenje",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "vite": "vite"
+  },
+  "devDependencies": {
+    "sass": "^1.107.1",
+    "vite": "^8.3.5"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.11.8",
+    "bootstrap": "^5.3.8",
+    "jquery": "^4.0.0"
+  }
+}

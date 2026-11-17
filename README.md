@@ -1,6 +1,6 @@
 # Priprema za kolokvij: Web programiranje
 
-Objašnjenja rješenja za četiri probna kolokvija i upute za pokretanje. Za svaki zadatak piše **što se traži**, **kako izgleda rješenje** i **zašto je rješenje baš takvo**.
+Objašnjenja rješenja za pet probnih kolokvija i upute za pokretanje. Za svaki zadatak piše **što se traži**, **kako izgleda rješenje** i **zašto je rješenje baš takvo**.
 
 > Kliknite na bilo koji **▶ Zadatak** da otvorite objašnjenje.
 
@@ -12,6 +12,7 @@ Objašnjenja rješenja za četiri probna kolokvija i upute za pokretanje. Za sva
 - [Probni kolokvij 2: EventPulse](#probni-kolokvij-2-eventpulse)
 - [Probni kolokvij 3: ReadingList](#probni-kolokvij-3-readinglist)
 - [Probni kolokvij 4: PantryCheck](#probni-kolokvij-4-pantrycheck)
+- [Probni kolokvij 5: Todo App](#probni-kolokvij-5-todo-app)
 
 ## Pokretanje
 
@@ -23,6 +24,7 @@ Svaka aplikacija ima poslužitelj (Express, port 3000) i klijent (Vite, port 808
 | 2: EventPulse | `pripreme za web/rjesenje` |
 | 3: ReadingList | `kolokvij_3/rjesenje` |
 | 4: PantryCheck | `kolokvij_4/rjesenje` |
+| 5: Todo App | `kolokvij_5/rjesenje` |
 
 ```bash
 # Terminal 1: poslužitelj (port 3000)
@@ -1650,5 +1652,271 @@ window.change_qty = change_qty;
 window.remove = remove;
 window.render_items = render_items;
 ```
+
+</details>
+
+---
+
+## Probni kolokvij 5: Todo App
+
+Popis zadataka u tablici. Svaki zadatak ima opis (`description`), datum i vrijeme (`date`) i status (`completed`). Nema gumba za brisanje ni za promjenu statusa u retku: sve se mijenja kroz **skočni prozor (modal)** koji se otvara klikom na ikonu olovke u stupcu Modify.
+
+> Zadatak je zadan samo slikama (`kolokvij_5/zad_2_1.png`, `zad_2_2.png`) i videom (`zad_2.mp4`). Nema predloška s TODO komentarima.
+
+**Što je novo u odnosu na kolokvij 4:**
+
+| Kolokvij 4 | Kolokvij 5 |
+|---|---|
+| gumbi u retku mijenjaju jedno polje | **modal** s obrascem mijenja sva polja odjednom |
+| `PATCH` postavlja jedan broj | `PUT` šalje opis, datum i status zajedno |
+| samo datum | datum **i vrijeme**, unos kroz `<input type="datetime-local">` (kalendar) |
+| boja značke | ikona ✕ (`text-danger`) / ✓ (`text-success`) |
+| postupni fade-in redaka | animacija modala (Bootstrap `modal fade`) |
+
+<details>
+<summary><b>Poslužitelj: podaci i rute</b></summary>
+
+### Podaci (`server/todos.js`)
+
+```js
+import { randomUUID } from "crypto";
+
+const todos = [
+  { id: randomUUID(), description: "Finish writing the project proposal", date: 1733212800000, completed: false },
+  { id: randomUUID(), description: "Review and merge pull requests", date: 1733061600000, completed: true },
+  // ... ukupno 10 zadataka sa slike
+];
+
+export { todos };
+export default todos;
+```
+
+**Zašto:** isti predložak kao u svim kolokvijima (vidi [datoteku s podacima](#4-datoteka-s-podacima)). Datumi su izračunati s `new Date("2024-12-03T09:00").getTime()`, tj. u lokalnom vremenu, pa tablica prikazuje točno vrijeme sa slike.
+
+### Rute (`server/index.js`)
+
+```js
+app.get("/api/todos", (req, res) => {
+    res.json(todos);
+});
+
+app.put("/api/todos/:id", (req, res) => {
+    const todo = todos.find((t) => t.id === req.params.id);
+    if (!todo) return res.status(404).json({ error: "Todo not found" });
+
+    const { description, date, completed } = req.body;
+    if (typeof description !== "string" || !description.trim()
+        || !Number.isFinite(date) || typeof completed !== "boolean") {
+        return res.status(400).json({ error: "description (string), date (ms) and completed (boolean) are required" });
+    }
+
+    Object.assign(todo, { description: description.trim(), date, completed });
+    res.json(todo);
+});
+```
+
+**Zašto:**
+- `PUT` (a ne `PATCH`) jer modal uvijek šalje **cijeli** zapis, sva tri polja.
+- Isti redoslijed kao prije: pronađi (`404`), provjeri ulaz (`400`), promijeni, vrati.
+- `Object.assign(todo, {...})` mijenja objekt koji je vratio `find`, dakle original u polju.
+- Prazan opis (samo razmaci) se odbija jer bi u tablici ostao prazan redak.
+
+</details>
+
+<details>
+<summary><b>Izgled: boja, font, navigacija i tablica</b></summary>
+
+### Boja i font (`src/scss/style.scss`)
+
+```scss
+$primary: #3f5daf;
+
+@import "bootstrap/scss/bootstrap";
+
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&display=swap');
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css");
+
+body { font-family: "Kanit", sans-serif; }
+```
+
+**Zašto:** plava sa slike postaje `$primary`, pa je dobiju i navigacija (`bg-primary`), i gumb Save changes (`btn-primary`), i kvačica u modalu, bez ijedne dodatne klase. Boja i font su procjena sa slike, nisu zadani.
+
+### Navigacija i tablica (`src/index.html`)
+
+```html
+<nav class="navbar navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="#">
+            <i class="bi bi-table text-warning me-2"></i>Todo App
+        </a>
+    </div>
+</nav>
+
+<main class="container my-5">
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th class="text-center">Completed</th>
+                    <th class="text-center">Modify</th>
+                </tr>
+            </thead>
+            <tbody id="todos-body"></tbody>
+        </table>
+    </div>
+</main>
+```
+
+**Zašto:**
+- `text-warning` daje žutu ikonu tablice ispred naslova.
+- `table` bez `table-striped`/`table-hover` jer slika ima samo crte između redaka.
+- `text-center` na zadnja dva stupca jer su ikone na slici centrirane.
+
+</details>
+
+<details>
+<summary><b>Modal: obrazac za izmjenu i animacija</b></summary>
+
+### HTML
+
+```html
+<div class="modal fade" id="edit-modal" tabindex="-1" aria-label="Edit todo" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" id="edit-form">
+            <div class="modal-body">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="edit-description" placeholder="Description" required>
+                    <label for="edit-description">Description</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="datetime-local" class="form-control" id="edit-date" placeholder="Date" required>
+                    <label for="edit-date">Date</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="edit-completed">
+                    <label class="form-check-label" for="edit-completed">Completed</label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+```
+
+**Zašto:**
+- **Animacija:** klasa `fade` na `.modal` je sve što treba. Bootstrap pri otvaranju zatamni pozadinu, a prozor klizne odozgo i postupno se pojavi, kao poruka na ekranu.
+- `form-floating` daje mali natpis (Description, Date) **iznad** vrijednosti, kao na slici. `placeholder` je obavezan da bi floating label radio.
+- `type="datetime-local"` daje ikonu kalendara i odabir datuma i vremena, bez ikakve biblioteke.
+- `.modal-content` je `<form>`, pa Enter u polju i klik na Save changes (`type="submit"`) pokreću isti `submit` događaj. `required` sprječava slanje praznog opisa.
+- `data-bs-dismiss="modal"` zatvara modal bez ijedne linije JavaScripta.
+
+</details>
+
+<details>
+<summary><b>Klijent: <code>src/js/index.js</code></b></summary>
+
+### `format_date` i `to_input_value`
+
+```js
+// "12/3/24, 9:00 AM"
+function format_date(timestamp) {
+    return new Date(timestamp).toLocaleString("en-US", { dateStyle: "short", timeStyle: "short" });
+}
+
+function to_input_value(timestamp) {
+    const offset = new Date(timestamp).getTimezoneOffset() * 60000;
+    return new Date(timestamp - offset).toISOString().slice(0, 16);
+}
+```
+
+**Zašto:**
+- `toLocaleString("en-US", ...)` s `short` stilom daje točno format sa slike, bez ručnog slaganja.
+- `datetime-local` prima samo tekst oblika `"2024-12-03T09:00"` u **lokalnom** vremenu. `toISOString()` daje UTC, pa bi vrijeme bilo pomaknuto za sat. Zato se prvo oduzme pomak zone, a `slice(0, 16)` odreže sekunde i `Z`.
+- Obrnuti smjer je jednostavan: `new Date("2024-12-03T09:00").getTime()` čita tekst kao lokalno vrijeme.
+
+### Ikona statusa i redak
+
+```js
+function status_icon(completed) {
+    return completed
+        ? '<i class="bi bi-check-circle-fill text-success"></i>'
+        : '<i class="bi bi-x-circle-fill text-danger"></i>';
+}
+
+function render_row(todo) {
+    const $row = $(`
+        <tr data-id="${todo.id}">
+            <td class="todo-description"></td>
+            <td>${format_date(todo.date)}</td>
+            <td class="text-center">${status_icon(todo.completed)}</td>
+            <td class="text-center">
+                <button class="btn btn-sm text-secondary" aria-label="Modify"><i class="bi bi-pencil-square"></i></button>
+            </td>
+        </tr>
+    `);
+    $row.find(".todo-description").text(todo.description);
+    $row.find("button").on("click", () => open_modal(todo));
+    return $row;
+}
+
+function render_todos(todos) {
+    $("#todos-body").empty().append(todos.map(render_row));
+}
+```
+
+**Zašto:**
+- Opis se postavlja s `.text()`, a ne unutar template stringa, jer ga sada **korisnik upisuje**. Opis poput `<img onerror=...>` bi se inače izvršio kao HTML.
+- `render_row` je posebna funkcija jer treba i pri prvom iscrtavanju i nakon spremanja (zamjena jednog retka).
+- `append` prima i polje elemenata, pa `todos.map(render_row)` doda sve retke odjednom.
+
+### Otvaranje modala i spremanje
+
+```js
+let editing_id = null;
+
+function open_modal(todo) {
+    editing_id = todo.id;
+    $("#edit-description").val(todo.description);
+    $("#edit-date").val(to_input_value(todo.date));
+    $("#edit-completed").prop("checked", todo.completed);
+    Modal.getOrCreateInstance("#edit-modal").show();
+}
+
+function save(event) {
+    event.preventDefault();
+    return $.ajax({
+        url: `/api/todos/${editing_id}`,
+        method: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify({
+            description: $("#edit-description").val(),
+            date: new Date($("#edit-date").val()).getTime(),
+            completed: $("#edit-completed").is(":checked")
+        }),
+        success: (updated) => {
+            $(`[data-id="${updated.id}"]`).replaceWith(render_row(updated));
+            Modal.getInstance("#edit-modal").hide();
+        },
+        error: (err) => console.error("Greška pri spremanju:", err)
+    });
+}
+
+$(() => {
+    $("#edit-form").on("submit", save);
+    get_todos().then(render_todos);
+});
+```
+
+**Zašto:**
+- Postoji **jedan** modal za sve retke. `open_modal` ga napuni podacima kliknutog zadatka, a `editing_id` pamti koji se zadatak uređuje.
+- `Modal` se uvozi iz `bootstrap` (`import { Modal } from "bootstrap"`). `getOrCreateInstance` ne stvara novi objekt pri svakom kliku.
+- `event.preventDefault()` sprječava da obrazac ponovno učita stranicu.
+- `.prop("checked", ...)` (a ne `.attr`) jer je `checked` trenutno stanje kvačice, a ne početni HTML atribut.
+- Redak se ponovno iscrta iz **odgovora poslužitelja**, pa ✕ postane ✓ (i obrnuto) tek kad je promjena stvarno spremljena.
 
 </details>

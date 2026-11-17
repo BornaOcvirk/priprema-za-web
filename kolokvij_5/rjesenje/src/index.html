@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+
+    <script type="module" src="./js/main.js"></script>
+    <script type="module" src="./js/index.js"></script>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">
+                <i class="bi bi-table text-warning me-2"></i>Todo App
+            </a>
+        </div>
+    </nav>
+
+    <main class="container my-5">
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th class="text-center">Completed</th>
+                        <th class="text-center">Modify</th>
+                    </tr>
+                </thead>
+                <tbody id="todos-body"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- "fade" daje animaciju: modal klizne odozgo i pojavi se, kao poruka na ekranu -->
+    <div class="modal fade" id="edit-modal" tabindex="-1" aria-label="Edit todo" aria-hidden="true">
+        <div class="modal-dialog">
+            <form class="modal-content" id="edit-form">
+                <div class="modal-body">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="edit-description" placeholder="Description" required>
+                        <label for="edit-description">Description</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="datetime-local" class="form-control" id="edit-date" placeholder="Date" required>
+                        <label for="edit-date">Date</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="edit-completed">
+                        <label class="form-check-label" for="edit-completed">Completed</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
